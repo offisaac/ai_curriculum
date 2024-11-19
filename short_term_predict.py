@@ -66,7 +66,7 @@ class LSTMModel(nn.Module):
 
 # 初始化模型、损失函数和优化器
 input_size = len(features)  # 输入特征数量
-num_epochs=301
+num_epochs=51
 hidden_size = 64  # LSTM的隐藏层大小
 output_size = 1  # 输出层的大小（例如预测一个数值）
 num_layers = 2  # LSTM的层数
@@ -95,9 +95,10 @@ for epoch in track(range(num_epochs)):
     if epoch != 0 and (epoch) % 10 == 0:
         print(f'Epoch [{epoch}/{num_epochs-1}], Loss: {avg_loss:.4f}')
         np.save('./save_data/save_list/save_list_short_term.npy', np.array(loss_list))
-        torch.save(model.state_dict(), f'save_model_parameter/new_resource_pred/model_parameter_{epoch}')
+        torch.save(model.state_dict(), f'save_model_parameter/load_pred/model_parameter_{epoch}')
 # 评估模型
 model.eval()
+model.load_state_dict(torch.load(f'save_model_parameter/load_prd/model_parameter_50',weights_only=True))
 with torch.no_grad():
     predictions = []
     actuals = []
@@ -119,14 +120,15 @@ loss_list=np.load('./save_data/save_list/save_list_short_term.npy')
 plt.figure(figsize=(12,6))
 plt.plot(loss_list[:,0],loss_list[:,1],label="epoch_loss")
 plt.legend()
-plt.show()
 plt.savefig("photos/load_pred/loss_epoch.png")#保存必须给定目标文件类型才停止
+plt.show()
 plt.figure(figsize=(12, 6))  # 创建第二个图 相当于清除原图层了
 plt.plot(actuals, label='Actual')
 plt.plot(predictions, label='Predicted', color='Pre')
 plt.legend()
-plt.show()
 plt.savefig("photos/load_pred/predict_target.png")#保存必须给定目标文件类型才停止
+plt.show()
+
 
 
 

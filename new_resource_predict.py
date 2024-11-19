@@ -118,11 +118,11 @@ loss_list=np.load('./save_data/save_list/save_list_new_resource.npy')
 plt.figure(figsize=(12,6))
 plt.plot(loss_list[:,0],loss_list[:,1],label="epoch_loss")
 plt.legend()
-plt.show()
 plt.savefig("photos/new_resource_pred/loss_epoch.png")#保存必须给定目标文件类型才停止
+plt.show()
 plt.figure(figsize=(12, 6))  # 创建第二个图 相当于清除原图层了
 plt.plot(actuals[:100], label='Actual')
 plt.plot(predictions[:100], label='Predicted', color='red')
 plt.legend()
+plt.savefig("photos/new_resource_pred/predict_target.png")#保存必须给定目标文件类型才停止 必须在show前调用 因为show会清除图层
 plt.show()
-plt.savefig("photos/new_resource_pred/predict_target.png")#保存必须给定目标文件类型才停止
