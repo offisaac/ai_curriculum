@@ -74,9 +74,9 @@ loss_list=[]
 model = LSTMModel(input_size, hidden_size, output_size, num_layers).to(device)
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.000005, betas=(0.9, 0.999), eps=1e-08,
-                       weight_decay=0)  # 如果没有二阶beta参数 Adam和RMSprop可以认为同效果
+                       weight_decay=0)  # 如果没有二阶beta参数 Adam和RMSprop可以认为同效果 学习率0.0001就ok了 这里故意拖慢的
 # 训练循环
-for epoch in range(num_epochs):
+for epoch in track(range(num_epochs)):
     model.train()
     epoch_loss = 0
     for batch_x, batch_y in dataloader_train:
@@ -94,8 +94,8 @@ for epoch in range(num_epochs):
     avg_loss = epoch_loss / len(dataloader_train)
     if epoch != 0 and (epoch) % 10 == 0:
         print(f'Epoch [{epoch}/{num_epochs-1}], Loss: {avg_loss:.4f}')
-        np.save('./save_data/save_list/save_list.npy', np.array(loss_list))
-        torch.save(model.state_dict(), f'save_data/save_model_parameter/model_parameter_{epoch}')
+        np.save('./save_data/save_list/save_list_short_term.npy', np.array(loss_list))
+        torch.save(model.state_dict(), f'save_model_parameter/new_resource_pred/model_parameter_{epoch}')
 # 评估模型
 model.eval()
 with torch.no_grad():
@@ -114,7 +114,7 @@ with torch.no_grad():
 predictions = target_scaler.inverse_transform(predictions)
 actuals = target_scaler.inverse_transform(actuals)
 
-loss_list=np.load('./save_data/save_list/save_list.npy')
+loss_list=np.load('./save_data/save_list/save_list_short_term.npy')
 # 绘制结果
 plt.figure(figsize=(12,6))
 plt.plot(loss_list[:,0],loss_list[:,1],label="epoch_loss")
