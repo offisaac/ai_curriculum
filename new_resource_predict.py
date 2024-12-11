@@ -39,7 +39,7 @@ Y_test = torch.tensor(Y_test, dtype=torch.float32).to(device)
 dataset_train = TensorDataset(X_train, Y_train)
 dataset_test = TensorDataset(X_test, Y_test)
 dataloader_train = DataLoader(dataset_train, batch_size=30, shuffle=True)
-dataloader_test = DataLoader(dataset_test, batch_size=30, shuffle=True)
+dataloader_test = DataLoader(dataset_test, batch_size=30, shuffle=False)
 # print(next(iter(dataloader_test))[0].shape)#这里使用iter返回迭代对象 使用next调取 使用[0]得到train的第一个batch 返回[100,10]代表sample_num和feature_num 而不包含batch_num
 #创建训练模型类别
 class LSTMModel(nn.Module):
@@ -64,7 +64,7 @@ class LSTMModel(nn.Module):
 
 # 初始化模型、损失函数和优化器
 input_size = len(features)  # 输入特征数量
-num_epochs=51
+num_epochs=301
 hidden_size = 64  # LSTM的隐藏层大小
 output_size = 1  # 输出层的大小（例如预测一个数值）
 num_layers = 2  # LSTM的层数
@@ -73,7 +73,7 @@ model = LSTMModel(input_size, hidden_size, output_size, num_layers).to(device)
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.000005, betas=(0.9, 0.999), eps=1e-08,
                        weight_decay=0)  # 如果没有二阶beta参数 Adam和RMSprop可以认为同效果
-# # 训练循环
+# 训练循环
 # for epoch in track(range(num_epochs)):
 #     model.train()
 #     epoch_loss = 0
@@ -95,7 +95,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.000005, betas=(0.9, 0.999)
 #         np.save('./save_data/save_list/save_list_new_resource.npy', np.array(loss_list))
 #         torch.save(model.state_dict(), f'save_model_parameter/new_resource_pred/model_parameter_{epoch}')
 # 评估模型
-model.load_state_dict(torch.load(f'save_model_parameter/new_resource_pred/model_parameter_50',weights_only=True))
+model.load_state_dict(torch.load(f'save_model_parameter/new_resource_pred/model_parameter_300',weights_only=True))
 model.eval()
 with torch.no_grad():
     predictions = []
@@ -124,5 +124,5 @@ plt.figure(figsize=(12, 6))  # 创建第二个图 相当于清除原图层了
 plt.plot(actuals[:100], label='Actual')
 plt.plot(predictions[:100], label='Predicted', color='red')
 plt.legend()
-plt.savefig("photos/new_resource_pred/predict_target.png")#保存必须给定目标文件类型才停止 必须在show前调用 因为show会清除图层
+plt.savefig("photos/new_resource_pred/predict_target_300.png")#保存必须给定目标文件类型才停止 必须在show前调用 因为show会清除图层
 plt.show()
